@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class Snake : MonoBehaviour
 {
     private Vector2 _direction = Vector2.right;
-    private List<Transform> _segments;
+    private List<Transform> _segment = new List<Transform>();
     public Transform segmentPrefab;
+    public int initialSize = 4;
 
     private void Start()
     {
-        _segments = new List<Transform>();
-        _segments.Add(this.transform);
+       ResetState();
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.W)) {
@@ -27,8 +28,7 @@ public class NewBehaviourScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        for (int i = _segments.Count - 1; i > 0; i--)
-        {
+        for (int i = _segments.Count - 1; i > 0; i--) {
             _segments[i].position = _segments[i - 1].position;
         }
 
@@ -43,15 +43,32 @@ public class NewBehaviourScript : MonoBehaviour
     {
         Transform segment = Instantiate(this.segmentPrefab);
         segment.position = _segments[_segments.Count - 1].position;
+
         _segments.Add(segment);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void ResetState()
     {
-        if (other.tag == "Food")
-        {
-            Grow();
+        for (int i = 1; i < _segments.Count; i++) {
+            Destroy(_segments[i].gameObject);
         }
 
+        _segments.Clear();
+        _segments.Add(this.transform);
+
+        for (int i = 1; i < this.initialSize; i++) {
+            _segments.Add(Instantiate(this.segmentPrefab));
+        }
+
+        this.transform.position = Vector3.zero;
+    } 
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Food") {
+            Grow();
+        } else if (other.tag == "Obstacle") {
+            ResetState();
+        }
     }
 }
