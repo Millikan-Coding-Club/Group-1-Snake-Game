@@ -4,7 +4,7 @@ using UnityEngine;
 public class Snake : MonoBehaviour
 {
     private Vector2 _direction = Vector2.right;
-    private List<Transform> _segment = new List<Transform>();
+    private List<Transform> _segments = new List<Transform>();
     public Transform segmentPrefab;
     public int initialSize = 4;
 
