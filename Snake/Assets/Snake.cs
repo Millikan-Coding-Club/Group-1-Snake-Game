@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using TMPro;
 using UnityEngine;
 
 public class Snake : MonoBehaviour
@@ -7,6 +9,8 @@ public class Snake : MonoBehaviour
     private List<Transform> _segments = new List<Transform>();
     public Transform segmentPrefab;
     public int initialSize = 4;
+    public TextMeshProUGUI text;
+    private int score = 0;
 
     private void Start()
     {
@@ -15,13 +19,13 @@ public class Snake : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W)) {
+        if (Input.GetKeyDown(KeyCode.W) && _direction != Vector2.down) {
             _direction = Vector2.up;
-        } else if (Input.GetKeyDown(KeyCode.S)) {
+        } else if (Input.GetKeyDown(KeyCode.S) && _direction != Vector2.up) {
             _direction = Vector2.down;
-        } else if (Input.GetKeyDown(KeyCode.A)) {
+        } else if (Input.GetKeyDown(KeyCode.A) && _direction != Vector2.right) {
             _direction = Vector2.left;
-        } else if (Input.GetKeyDown(KeyCode.D)) {
+        } else if (Input.GetKeyDown(KeyCode.D) && _direction != Vector2.left) {
             _direction = Vector2.right;
         }
     }
@@ -49,6 +53,9 @@ public class Snake : MonoBehaviour
 
     private void ResetState()
     {
+        score = 0;
+        text.text = score.ToString();
+
         for (int i = 1; i < _segments.Count; i++) {
             Destroy(_segments[i].gameObject);
         }
@@ -67,6 +74,8 @@ public class Snake : MonoBehaviour
     {
         if (other.tag == "Food") {
             Grow();
+            score++;
+            text.text = score.ToString();
         } else if (other.tag == "Obstacle") {
             ResetState();
         }
