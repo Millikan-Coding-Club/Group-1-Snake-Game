@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Snake : MonoBehaviour
 {
@@ -7,6 +9,8 @@ public class Snake : MonoBehaviour
     private List<Transform> _segments = new List<Transform>();
     public Transform segmentPrefab;
     public int initialSize = 4;
+    private int score = 0;
+    public TextMeshProUGUI scoreText;
 
     private void Start()
     {
@@ -50,6 +54,9 @@ public class Snake : MonoBehaviour
 
     private void ResetState()
     {
+        score = 0;
+        scoreText.text = score.ToString();
+
         for (int i = 1; i < _segments.Count; i++) {
             Destroy(_segments[i].gameObject);
         }
@@ -68,6 +75,8 @@ public class Snake : MonoBehaviour
     {
         if (other.tag == "Food") {
             Grow();
+            score++;
+            scoreText.text = score.ToString();
         } else if (other.tag == "Obstacle") {
             ResetState();
         }
